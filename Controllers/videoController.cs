@@ -13,49 +13,75 @@ namespace MVCLaboratorio.Controllers
     public class videoController : Controller
     {
         //
-        // GET: /video/
+        // GET: /Video/
 
-        public ActionResult Index()
+
+        public ActionResult VerVideo()
         {
+            ViewData["video"] = BaseHelper.ejecutarConsulta(
+                "SELECT * FROM video", CommandType.Text);
             return View();
         }
+
         public ActionResult Create()
         {
             return View();
+
         }
+
         [HttpPost]
-        public ActionResult Create(int idVideo, String titulo, int reproducciones, string url)
+        public ActionResult Create(int idVideo, string titulo, int repro, string url)
         {
-            //guardar
+
             List<SqlParameter> parametros = new List<SqlParameter>();
             parametros.Add(new SqlParameter("@idVideo", idVideo));
             parametros.Add(new SqlParameter("@titulo", titulo));
-            parametros.Add(new SqlParameter("@reproducciones", reproducciones));
+            parametros.Add(new SqlParameter("@repro", repro));
             parametros.Add(new SqlParameter("@url", url));
 
-            BaseHelper.ejecutarSentencia("sp_videos_insetar", CommandType.StoredProcedure, parametros);
-
-            return RedirectToAction("Index", "video");
+            BaseHelper.ejecutarConsulta("sp_video_insertar", CommandType.StoredProcedure, parametros);
+            return RedirectToAction("Index", "Video");
         }
+
+
+
+
 
         public ActionResult Delete()
         {
             return View();
         }
+
+
         [HttpPost]
         public ActionResult Delete(int idVideo)
         {
-            return View();
+            List<SqlParameter> parametros = new List<SqlParameter>();
+            parametros.Add(new SqlParameter("@idVideo", idVideo));
+            BaseHelper.ejecutarSentencia("sp_video_borrar", CommandType.StoredProcedure, parametros);
+            return RedirectToAction("Index", "Video");
         }
+
+
+
+
 
         public ActionResult Edit()
         {
             return View();
         }
+
+
         [HttpPost]
-        public ActionResult Edit(int idVideo, String titulo, int reproducciones, string url)
+        public ActionResult Edit(int idVideo, string titulo, int repro, string url)
         {
-            return View();
+            List<SqlParameter> parametros = new List<SqlParameter>();
+            parametros.Add(new SqlParameter("@idVideo", idVideo));
+            parametros.Add(new SqlParameter("@titulo", titulo));
+            parametros.Add(new SqlParameter("@repro", repro));
+            parametros.Add(new SqlParameter("@url", url));
+            BaseHelper.ejecutarConsulta("sp_video_actualizar", CommandType.StoredProcedure, parametros);
+            return RedirectToAction("Index", "Video");
         }
 
     }
